@@ -72,7 +72,7 @@ public class ServicioNotificacion {
 	public Mono<Void> deleteById(String id){
 		return findById(id).flatMap(notificacionRepositorio::delete);
 	}
-	
+
 	/**
 	 * Función para tener una instancia de notificación a partir del recurso que nos devuelve la bbdd
 	 * @param notificacion Notificacion
@@ -81,11 +81,11 @@ public class ServicioNotificacion {
 	public Notificacion toResource(Notificacion notificacion) {
 		return notificacion;
 	}
-	
+
 	/**
 	 * Función que utilizaremos en el controlador para escuchar los eventos de cambio que nos están enviando 
 	 */
-	public Flux<Evento> listenToEvents(){
+	public Flux<Evento> escucharEventos(){
 		final ChangeStreamOptions changeStreamOptions = 
 				ChangeStreamOptions
 				.builder() //Esto ha creado una instancia del constructor de ChangeStreamOptions
@@ -98,10 +98,10 @@ public class ServicioNotificacion {
 										OperationType.UPDATE.getValue(),
 										OperationType.REPLACE.getValue()
 										)
-						)
-				))
+								)
+						))
 				.build(); //Creación de instancia final de ChangeStreamOptions con todas las configuraciones anteriores aplicadas
-		
+
 		//Por último configuramos una transmisión de cambios en la colección "notificaciones" de la base de datos MongoDB.
 		//Utilizando las opciones de configuracion que hemos especificado anteriormente en changeStreamOptions para ver como se van a gestionar los cambios en la coleccion "notificaciones"
 		return reactiveMongoTemplate
@@ -109,7 +109,7 @@ public class ServicioNotificacion {
 				.map(this::toEvent); //Por último, se transforma a un evento y se devuelve
 	}
 
-	
+
 	/**
 	 * Función que devuelve el evento que se ha producido
 	 * @param changeStreamEvent Evento de flujo de cambio que se produce
