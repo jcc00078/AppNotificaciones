@@ -1,22 +1,23 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import {Notificacion} from '../model/notificacion'
 @Injectable({
   providedIn: 'root',
 })
 export class NotificacionService {
-  baseURL: string = 'https://localhost:8080/notificacion';
+  baseURL: string = 'http://localhost:8080/notificacion';
 
   constructor(private httpClient: HttpClient) {}
 
-  getAll(): Observable<Notification[]> {
-    return this.httpClient.get<Notification[]>(this.baseURL);
+  getAll(): Observable<Notificacion[]> {
+    return this.httpClient.get<Notificacion[]>(this.baseURL);
   }
-  crearNotificacion(notificacion: Notification): Observable<Notification> {
-    return this.httpClient.post<Notification>(this.baseURL, notificacion);
+  crearNotificacion(notificacion: Notificacion): Observable<Notificacion> {
+    return this.httpClient.post<Notificacion>(this.baseURL, notificacion);
   }
-  actualizarNotificacion(notificacion: Notification): Observable<Notification> {
-    return this.httpClient.put<Notification>(this.baseURL, notificacion);
+  actualizarNotificacion(notificacion: Notificacion): Observable<Notificacion> {
+    return this.httpClient.put<Notificacion>(this.baseURL, notificacion);
   }
   borrarNotificacion(id: string): Observable<any> {
     return this.httpClient.delete<void>(this.baseURL + 'delete/' + id);
