@@ -1,10 +1,104 @@
-<p-messages severity="info">
-    <ng-template pTemplate>
-      <img
-        src="https://primefaces.org/cdn/primeng/images/primeng.svg"
-        width="32"
+<div class="flex surface-card p-3 mb-3 shadow-2">
+  <h1>Revisiones</h1>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Añadir"
+    class="ml-3 p-button-raised"
+    (click)="mostrarChat()"
+  ></button>
+</div>
+<div
+  class="grid grid-nogutter justify-content-between mt-2 notification_container"
+>
+  <div
+    class="sm:col-12 md:col-6 lg:col-4 flex flex-column align-items-start notification"
+    *ngFor="let tipo of getTipos()"
+  >
+    <h2 class="ml-4">{{ getTextoTipos(tipo) }}</h2>
+    <p-messages
+      class="w-full px-4"
+      severity="{{ notificacion.tipo.toLowerCase() }}"
+      *ngFor="let notificacion of mapaNotificaciones.get(tipo)"
+    >
+      <!--El severity debe estar en minuscula-->
+      <ng-template pTemplate>
+        <div class="flex justify-content-evenly align-items-center min-w-full">
+          <span class="text-lg col-8">
+            {{ notificacion.mensaje }}
+          </span>
+          <button
+            *ngIf="tipo === 'INFO'"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-bookmark"
+            class="p-button-rounded col-2"
+            (click)="actualizarNotificacion(notificacion, 'WARN')"
+          ></button>
+          <button
+            *ngIf="tipo === 'WARN'"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-check"
+            class="p-button-rounded p-button-warning col-2"
+            (click)="actualizarNotificacion(notificacion, 'SUCCESS')"
+          ></button>
+          <button
+            *ngIf="tipo === 'SUCCESS'"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-success col-2"
+            (click)="borrarNotificacion(notificacion.id!)"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-secondary p-button-text ml-1 col-2"
+            (click)="editarChat(notificacion)"
+          ></button>
+        </div>
+      </ng-template>
+    </p-messages>
+  </div>
+</div>
+<p-dialog
+  header="Datos del vehículo"
+  [(visible)]="display"
+  [style]="{ width: '50vw' }"
+>
+  <div>
+    <div class="field w-full">
+      <label for="mensaje" class="block w-full">Introduce el modelo</label>
+      <input
+        id="mensaje"
+        type="text"
+        class="w-full"
+        aria-describedby="mensaje"
+        name="mensaje"
+        pInputText
+        [(ngModel)]="nuevaNotificacion.mensaje"
       />
-      <div class="ml-2">Always bet on Prime.</div>
-    </ng-template>
-  </p-messages>
-  
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button
+      icon="pi pi-check"
+      iconPos="right"
+      [label]="aux ? 'Actualizar datos vehículo' : 'Crear revisión'"
+      (click)="
+        edit
+          ? actualizarNotificacion(nuevaNotificacion, nuevaNotificacion.tipo)
+          : crearNotificacion(nuevaNotificacion)
+      "
+      styleClass="p-button-text"
+    >
+    </p-button>
+  </ng-template>
+</p-dialog>

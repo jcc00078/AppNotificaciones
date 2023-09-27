@@ -92,7 +92,7 @@ public class ServicioNotificacion {
 				.returnFullDocumentOnUpdate() // si hay una actualización en un documento, se obtendrá el documento completo
 				.filter(Aggregation.newAggregation( //configuración de filtro para la transmisión de cambios utilizando una agregación de MongoDB
 						Aggregation.match(
-								Criteria.where("tipoOperacion") //Definimos los tipos de operaciones en los que se producirán los cambios
+								Criteria.where("operationType") //Definimos los tipos de operaciones en los que se producirán los cambios
 								.in(OperationType.DELETE.getValue(),
 										OperationType.INSERT.getValue(),
 										OperationType.UPDATE.getValue(),

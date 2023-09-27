@@ -7,6 +7,14 @@ import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { HomeComponent } from './home/home.component';
+import {ButtonModule} from 'primeng/button';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {DialogModule} from 'primeng/dialog';
+import {DividerModule} from 'primeng/divider';
+import {InputTextModule} from 'primeng/inputtext';
+import { MessageService } from 'primeng/api';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -18,9 +26,14 @@ import { HomeComponent } from './home/home.component';
     FormsModule,
     MessageModule,
     MessagesModule,
-    ToastModule
+    ToastModule,
+    ButtonModule,
+    BrowserAnimationsModule, //Para usar modales etc...
+    DialogModule,
+    InputTextModule,
+    DividerModule,
   ],
-  providers: [],
+  providers: [MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

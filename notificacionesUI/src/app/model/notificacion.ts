@@ -1,11 +1,11 @@
 export interface Notificacion {
-  id?: string;
-  mensaje: string;
-  tipo: string;
+  id?: string,
+  mensaje: string,
+  tipo: string
 }
 
-export enum tiposNotificaciones {
-  SUCCESS = 'Resuelta',
-  WARN = 'En progreso',
-  INFO = 'Nueva'
+export enum TiposNotificacion {
+  INFO = 'Pendiente de revisión',
+  WARN = 'En proceso',
+  SUCCESS = 'Mantenimiento Completado'
 }

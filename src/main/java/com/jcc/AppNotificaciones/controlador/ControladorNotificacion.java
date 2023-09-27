@@ -66,7 +66,7 @@ public class ControladorNotificacion {
 	 * @param id Identificador de la notificación que va a ser borrada
 	 * @return Mono<Void> Representa la notificación borrada 
 	 */
-	@DeleteMapping("delete/{id}")
+	@DeleteMapping("/delete/{id}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT) 
 	public Mono<Void> borrarNotificacion(@PathVariable final String id ){
 		return servicioNotificacion.deleteById(id);

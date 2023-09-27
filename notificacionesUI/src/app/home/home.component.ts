@@ -1,6 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NotificacionService } from '../service/notificacion.service';
-import { Notificacion, tiposNotificaciones } from '../model/notificacion';
+import { Notificacion, TiposNotificacion } from '../model/notificacion';
+import { MessageService } from 'primeng/api';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -9,7 +11,19 @@ import { Notificacion, tiposNotificaciones } from '../model/notificacion';
 export class HomeComponent implements OnInit {
   mapaNotificaciones = new Map<String, Notificacion[]>(); // Para desplegar en la vista las notificaciones según su tipo
   private eventSource!: EventSource; //Con ! indicamos que la variable se inicializará en algún momento
-  constructor(private notificacionServicio: NotificacionService) {}
+  TiposNotificacion = TiposNotificacion;
+  display: boolean = false;
+  nuevaNotificacion: Notificacion = {
+    mensaje: '',
+    tipo: 'INFO',
+  };
+  edit: boolean = false;
+  aux: boolean = false;
+
+  constructor(
+    private notificacionServicio: NotificacionService,
+    private messageService: MessageService
+  ) {}
   ngOnInit(): void {
     //Ejecuta lo que hay dentro cuando se inicia el componente
     this.getAll();
@@ -17,6 +31,14 @@ export class HomeComponent implements OnInit {
   }
   ngOnDestroy(): void {
     this.pararEscuchaEventos();
+  }
+  mostrarChat() {
+    this.edit = false;
+    this.nuevaNotificacion = {
+      mensaje: '',
+      tipo: 'INFO',
+    };
+    this.display = true;
   }
   getAll() {
     for (const tipo of this.getTipos()) {
@@ -29,23 +51,48 @@ export class HomeComponent implements OnInit {
     });
   }
   getTipos(): Array<string> {
-    return Object.keys(tiposNotificaciones);
+    return Object.keys(TiposNotificacion);
   }
-  borrarNotificacion(id: string) {
-    this.notificacionServicio.borrarNotificacion(id).subscribe(); //subscribe() para ser notificado cuando se produzca un evento o se complete la operación asincrona
-  }
-  crearNotificacion(notificacion: Notificacion) {
-    this.notificacionServicio.crearNotificacion(notificacion).subscribe();
-  }
-  actualizarNotificacion(notificacion: Notificacion) {
-    this.notificacionServicio.actualizarNotificacion(notificacion).subscribe();
+  getTextoTipos(key: string) {
+    return TiposNotificacion[key as keyof typeof TiposNotificacion];
   }
 
-  private despuesDeGuardarNotificacion(evento: any) {
-    const notificacion = evento.notificacion;
+  editarChat(notificacion: Notificacion) {
+    this.aux=true;
+    this.nuevaNotificacion = notificacion;
+    this.display = true;
+  }
+
+  crearNotificacion(notificacion: Notificacion) {
+    this.aux=false;
+    this.notificacionServicio.crearNotificacion(notificacion).subscribe(() => {
+      this.display = false;
+      //this.edit = false;
+    });
+  }
+
+  actualizarNotificacion(notificacion: Notificacion, tipo: string) {
+    notificacion.tipo = tipo;
+    this.notificacionServicio
+      .actualizarNotificacion(notificacion)
+      .subscribe();
+  }
+
+  borrarNotificacion(id: string) {
+    this.notificacionServicio.borrarNotificacion(id).subscribe();
+  }
+
+  private despuesDeGuardarNotificacion(event: any) {
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Aviso',
+      detail: 'Nuevos cambios',
+    });
+    const notificacion = event.notificacion;
     this.eliminarNotificacion(notificacion.id);
     this.mapaNotificaciones.get(notificacion.tipo)?.push(notificacion);
   }
+
   private eliminarNotificacion(id: string) {
     //Para eliminar una notificacion del mapa
     for (const notificaciones of this.mapaNotificaciones.values()) {
@@ -62,8 +109,8 @@ export class HomeComponent implements OnInit {
   }
   private iniciarEscuchaEventos() {
     this.eventSource = this.notificacionServicio.escucharEventos(
-      (e) => this.despuesDeGuardarNotificacion(e),
-      (e) => this.despuesDeBorrarNotificacion(e)
+      (event) => this.despuesDeGuardarNotificacion(event),
+      (event) => this.despuesDeBorrarNotificacion(event)
     );
   }
   private pararEscuchaEventos() {

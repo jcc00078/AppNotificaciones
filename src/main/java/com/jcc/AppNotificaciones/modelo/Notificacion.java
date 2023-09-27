@@ -17,9 +17,6 @@ public class Notificacion {
 	private String mensaje;
 	private String tipo;
 	
-	public Notificacion() {
-		// TODO Auto-generated constructor stub
-	}
 	
 	public Notificacion(String mensaje, String tipo) {
 		this.mensaje = mensaje;

@@ -20,17 +20,17 @@ export class NotificacionService {
     return this.httpClient.put<Notificacion>(this.baseURL, notificacion);
   }
   borrarNotificacion(id: string): Observable<any> {
-    return this.httpClient.delete<void>(this.baseURL + 'delete/' + id);
+    return this.httpClient.delete<void>(this.baseURL + '/delete/' + id);
   }
   escucharEventos(
     guardado: (event: any) => void,
     borrado: (event: any) => void
   ): EventSource {
     const eventSource = new EventSource(this.baseURL + '/eventos');
-    eventSource.addEventListener('NotificacionGuardada', (event) => {
+    eventSource.addEventListener('NotificacionGuardada', (event: MessageEvent) => {
       guardado(JSON.parse(event.data));
     });
-    eventSource.addEventListener('NotificacionBorrada', (event) => {
+    eventSource.addEventListener('NotificacionBorrada', (event: MessageEvent) => {
       borrado(JSON.parse(event.data));
     });
     eventSource.onerror = (error) => {
